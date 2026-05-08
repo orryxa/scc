@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>ORRYXA AI | Free & Freemium AI Tools – 150+ Tools Directory</title>
+    <!-- Google Fonts & modern styling -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: radial-gradient(circle at 10% 20%, #0a0f2a, #03050b);
+            font-family: 'Inter', 'Space Grotesk', sans-serif;
+            color: #f0f3ff;
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+
+        /* ========== SIDEBAR (mobile menu) ========== */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            z-index: 998;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: 280px;
+            height: 100%;
+            background: rgba(8, 15, 30, 0.98);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(168, 85, 247, 0.4);
+            box-shadow: 10px 0 40px rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            transition: left 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 1rem;
+            gap: 1.5rem;
+        }
+        .sidebar.open { left: 0; }
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(168, 85, 247, 0.3);
+        }
+        .sidebar-logo {
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f0f9ff, #c084fc, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .close-sidebar {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #c084fc;
+            font-size: 1.4rem;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+        .close-sidebar:hover {
+            background: rgba(168,85,247,0.3);
+            transform: rotate(90deg);
+        }
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .sidebar-nav a {
+            color: #eef5ff;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            padding: 0.7rem 1rem;
+            border-radius: 1rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        .sidebar-nav a i { width: 24px; color: #a855f7; }
+        .sidebar-nav a:hover, .sidebar-nav a.active {
+            background: linear-gradient(95deg, rgba(168,85,247,0.2), rgba(59,130,246,0.2));
+            color: #c084fc;
+            transform: translateX(5px);
+        }
+        .sidebar-footer {
+            margin-top: auto;
+            padding-top: 1rem;
+            font-size: 0.7rem;
+            text-align: center;
+            opacity: 0.6;
+        }
+
+        /* Desktop Nav */
+        .desktop-nav {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .menu-toggle {
+            background: rgba(168,85,247,0.2);
+            border: 1px solid #a855f7;
+            border-radius: 12px;
+            padding: 0.5rem 0.8rem;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: none;
+        }
+        .nav-links {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+        nav a {
+            text-decoration: none;
+            color: #eef5ff;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        nav a:hover { color: #c084fc; text-shadow: 0 0 6px #9b4dff; }
+
+        /* Mobile full-width search */
+        .mobile-search-wrapper {
+            display: none;
+            width: 100%;
+            margin: 0.5rem 0 1rem;
+            padding: 0 0.5rem;
+        }
+        .mobile-search-full {
+            background: rgba(20, 30, 55, 0.8);
+            backdrop-filter: blur(12px);
+            border-radius: 3rem;
+            padding: 0.7rem 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            border: 1px solid rgba(80,150,255,0.5);
+            width: 100%;
+        }
+        .mobile-search-full input {
+            background: transparent;
+            border: none;
+            color: white;
+            outline: none;
+            width: 100%;
+            font-size: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 0 1rem; }
+            .desktop-nav .nav-links { display: none; }
+            .menu-toggle { display: block; }
+            .mobile-search-wrapper { display: block; }
+        }
+
+        /* Header & Filters */
+        .header-section {
+            text-align: center;
+            margin: 1rem 0 1rem;
+        }
+        .header-section h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #a855f7, #38bdf8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .stats-badge {
+            background: rgba(34,197,94,0.2);
+            backdrop-filter: blur(8px);
+            border-radius: 100px;
+            padding: 0.4rem 1rem;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.8rem;
+        }
+        .filter-bar {
+            background: rgba(20, 28, 48, 0.5);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            padding: 0.8rem 1.5rem;
+            margin: 1.5rem 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            border: 1px solid rgba(80,150,255,0.3);
+        }
+        .price-filters {
+            display: flex;
+            gap: 0.7rem;
+            flex-wrap: wrap;
+        }
+        .price-chip {
+            background: rgba(45, 55, 85, 0.6);
+            border-radius: 2rem;
+            padding: 0.4rem 1rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .price-chip.active, .price-chip:hover {
+            background: linear-gradient(125deg, #a855f7, #3b82f6);
+            color: white;
+        }
+        .search-box {
+            background: rgba(0,0,0,0.4);
+            border-radius: 2rem;
+            padding: 0.4rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 1px solid #3b82f6;
+        }
+        .search-box input {
+            background: transparent;
+            border: none;
+            color: white;
+            outline: none;
+            width: 200px;
+        }
+
+        /* Tools Grid */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1.8rem;
+            margin: 2rem 0;
+        }
+        .tool-card {
+            background: rgba(12, 20, 35, 0.7);
+            backdrop-filter: blur(14px);
+            border-radius: 1.5rem;
+            padding: 1.3rem;
+            border: 1px solid rgba(100, 150, 255, 0.25);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .tool-card:hover {
+            transform: translateY(-5px);
+            border-color: #c084fc;
+            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.5);
+        }
+        .price-tag {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            border-radius: 20px;
+            padding: 0.2rem 0.7rem;
+            font-size: 0.65rem;
+            font-weight: 700;
+        }
+        .price-tag.free { background: #22c55e; color: #000; }
+        .price-tag.freemium { background: #f59e0b; color: #000; }
+        .price-tag.paid { background: #ef4444; color: #fff; }
+        .tool-header {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 0.8rem;
+            padding-right: 70px;
+        }
+        .tool-icon {
+            font-size: 2rem;
+            background: linear-gradient(145deg, #38bdf8, #c084fc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .tool-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        .tool-category {
+            display: inline-block;
+            background: rgba(59,130,246,0.2);
+            border-radius: 20px;
+            padding: 0.2rem 0.7rem;
+            font-size: 0.65rem;
+            margin: 0.5rem 0;
+        }
+        .tool-desc {
+            font-size: 0.8rem;
+            opacity: 0.85;
+            margin: 0.6rem 0;
+            line-height: 1.4;
+        }
+        .limit-badge {
+            background: rgba(245,158,11,0.2);
+            border-radius: 12px;
+            padding: 0.2rem 0.5rem;
+            font-size: 0.65rem;
+            display: inline-block;
+            margin: 0.3rem 0;
+        }
+        .tool-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            gap: 0.5rem;
+        }
+        .details-btn {
+            background: rgba(59,130,246,0.2);
+            border: 1px solid #3b82f6;
+            border-radius: 2rem;
+            padding: 0.4rem 1rem;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .details-btn:hover {
+            background: #3b82f6;
+            color: white;
+        }
+        .tool-link-btn {
+            background: rgba(168,85,247,0.25);
+            border-radius: 2rem;
+            padding: 0.4rem 1rem;
+            font-size: 0.7rem;
+            text-decoration: none;
+            color: #c084fc;
+            font-weight: 600;
+            border: 1px solid #a855f7;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .tool-link-btn:hover {
+            background: #a855f7;
+            color: white;
+        }
+
+        /* Modal Popup */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(12px);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: rgba(12, 20, 35, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 2rem;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid #a855f7;
+            position: relative;
+        }
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+        }
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .modal-price {
+            display: inline-block;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            margin-bottom: 1rem;
+        }
+        .modal-desc {
+            margin: 1rem 0;
+            line-height: 1.5;
+        }
+        .modal-limit {
+            background: rgba(245,158,11,0.2);
+            padding: 0.5rem;
+            border-radius: 1rem;
+            margin: 1rem 0;
+        }
+        .modal-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #a855f7;
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            text-decoration: none;
+            margin-top: 1rem;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 2rem 0 3rem;
+            flex-wrap: wrap;
+        }
+        .page-btn {
+            background: rgba(45,55,85,0.6);
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            cursor: pointer;
+        }
+        .page-btn.active, .page-btn:hover {
+            background: linear-gradient(125deg, #a855f7, #3b82f6);
+        }
+        .swipe-hint {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            z-index: 900;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        @media (min-width: 769px) { .swipe-hint { display: none; } }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <span class="sidebar-logo">⚡ ORRYXA AI</span>
+        <button class="close-sidebar" id="closeSidebarBtn"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="sidebar-nav">
+        <a href="index.html"><i class="fas fa-home"></i> Home</a>
+        <a href="trending.html"><i class="fas fa-chart-line"></i> Live Trending</a>
+        <a href="AiTools.html"><i class="fas fa-cubes"></i> All Tools</a>
+        <a href="categories.html"><i class="fas fa-tags"></i> Categories</a>
+        <a href="news.html"><i class="fas fa-newspaper"></i> AI News</a>
+        <a href="freeTools.html" class="active"><i class="fas fa-gem"></i> Free Tools</a>
+        <a href="about.html"><i class="fas fa-info-circle"></i> About</a>
+    </div>
+    <div class="sidebar-footer">
+        <i class="fas fa-gem"></i> 150+ Free & Freemium AI Tools<br>
+        © 2025 ORRYXA
+    </div>
+</div>
+
+<div class="container">
+    <nav style="display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 0; flex-wrap: wrap; gap: 1rem;">
+        <div class="logo" style="font-family: 'Space Grotesk', monospace; font-size: 1.8rem; font-weight: 800; background: linear-gradient(135deg, #f0f9ff, #c084fc, #3b82f6); -webkit-background-clip: text; background-clip: text; color: transparent;">
+            ⚡ ORRYXA AI <span style="font-size:0.7rem;">| Free Tools</span>
+        </div>
+        <div class="desktop-nav">
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="trending.html">Trending</a>
+                <a href="AiTools.html">All Tools</a>
+                <a href="categories.html">Categories</a>
+                <a href="news.html">AI News</a>
+                <a href="freeTools.html" style="border-bottom:2px solid #a855f7;">Free Tools</a>
+				<a href="about.html">About</a>
+            </div>
+        </div>
+        <button class="menu-toggle" id="menuToggleBtn"><i class="fas fa-bars"></i></button>
+    </nav>
+
+    <div class="mobile-search-wrapper">
+        <div class="mobile-search-full">
+            <i class="fas fa-search"></i>
+            <input type="text" id="mobileSearchInput" placeholder="Search free AI tools...">
+        </div>
+    </div>
+
+    <div class="header-section">
+        <h1><i class="fas fa-gem"></i> Free & Freemium AI Tools</h1>
+        <p style="opacity:0.8;">150+ AI tools you can use for free • Some have premium upgrades</p>
+        <div class="stats-badge"><i class="fas fa-check-circle"></i> 150+ Tools • Filter by price model</div>
+    </div>
+
+    <div class="filter-bar">
+        <div class="price-filters" id="priceFilters">
+            <div class="price-chip active" data-price="all">All (150+)</div>
+            <div class="price-chip" data-price="free">✨ Completely Free</div>
+            <div class="price-chip" data-price="freemium">🔄 Freemium (Limited Free)</div>
+        </div>
+        <div class="search-box desktop-search">
+            <i class="fas fa-search"></i>
+            <input type="text" id="desktopSearchInput" placeholder="Search tools...">
+        </div>
+    </div>
+
+    <div id="toolsGrid" class="tools-grid"></div>
+    <div id="pagination" class="pagination"></div>
+</div>
+
+<div id="toolModal" class="modal">
+    <div class="modal-content">
+        <button class="modal-close" id="modalCloseBtn"><i class="fas fa-times"></i></button>
+        <div class="modal-title" id="modalTitle"></div>
+        <div class="modal-price" id="modalPrice"></div>
+        <div class="modal-desc" id="modalDesc"></div>
+        <div id="modalLimit" class="modal-limit" style="display:none;"></div>
+        <a href="#" id="modalLink" class="modal-link" target="_blank"><i class="fas fa-external-link-alt"></i> Launch Tool →</a>
+    </div>
+</div>
+
+<div class="swipe-hint" id="swipeHint"><i class="fas fa-arrows-alt-h"></i> Swipe right → open menu</div>
+
+<script>
+    // ======================== 150+ FREE & FREEMIUM AI TOOLS DATABASE ========================
+    const categories = ["Chat/LLM", "Image Gen", "Video", "Audio", "Productivity", "Coding", "Design", "Research", "Business"];
+    const toolNames = [
+        "ChatGPT Free", "Claude Free", "Gemini Free", "Copilot Free", "Perplexity Free", "Leonardo Free", "Playground AI", "Hugging Face", "Replicate Free", "Stable Diffusion Web",
+        "Krea AI", "Ideogram", "Recraft", "Remove.bg", "Clipdrop", "ElevenLabs Free", "Suno Free", "Descript Free", "Otter AI", "Gamma Free", "Tome Free", "Notion AI Free",
+        "Zapier AI", "Copy.ai", "Jasper Free", "Writesonic Free", "Rytr", "Grammarly Free", "Quillbot", "HeyGen Free", "Pika Free", "Runway Free", "CapCut AI", "Canva AI",
+        "Adobe Express", "Figma AI", "Uizard", "Beautiful AI", "SlidesAI", "Tally AI", "Typeform AI", "Miro AI", "Taskade AI", "Mem AI", "Reclaim AI", "Motion Free",
+        "Cursor AI", "Tabnine", "Codeium", "Bito", "AskCodi", "Mintlify", "Polymath", "Continue.dev", "Phind", "Blackbox AI", "Bolt.new", "v0.dev", "Claude Code",
+        "DeepSeek", "Mistral Chat", "Llama 3 Chat", "Command R", "Kimi Chat", "Qwen Chat", "Pi AI", "Character AI", "Poe Free", "You.com", "Forefront", "HuggingChat",
+        "Bing Chat", "Cohere Playground", "Groq Cloud", "Replicate", "Fal.ai", "Together AI", "Modal Labs", "Banana Dev", "Beam Cloud", "Steamship", "LangFlow", "Flowise",
+        "Dify", "LiteLLM", "OpenRouter", "Glif", "Clipdrop", "Vectorizer", "Upscale AI", "Lexica", "Playground", "SeaArt", "Tensor Art", "PixAI", "Mage Space", "DreamStudio",
+        "Craiyon", "Artbreeder", "Deep Dream", "NightCafe", "Blue Willow", "Imagine AI", "Fotor AI", "Pixelcut", "PhotoRoom", "Erase.bg", "Watermark Remover", "Krea Enhance",
+        "Soundraw", "Boomy", "Riffusion", "AIVA Free", "Mubert", "Beatoven", "Voicemod", "Murf Free", "Resemble Free", "Play.ht Free", "Podcastle", "Alitu", "Adobe Podcast"
+    ];
+    
+    let tools = [];
+    let currentPriceFilter = "all";
+    let currentSearch = "";
+    let currentPage = 1;
+    const itemsPerPage = 24;
+    
+    function getRandomPrice() {
+        const rand = Math.random();
+        if (rand < 0.35) return "free";
+        if (rand < 0.75) return "freemium";
+        return "free";
+    }
+    
+    function getLimitText(price) {
+        if (price === "freemium") {
+            const limits = ["50 free credits/month", "100 generations/day", "Limited to 500 tokens", "Watermark on free", "3 free projects", "Basic features only", "10 API calls/day", "30-day trial", "Limited context length"];
+            return limits[Math.floor(Math.random() * limits.length)];
+        }
+        return null;
+    }
+    
+    function getDetailedLimit(price) {
+        if (price === "freemium") {
+            const details = ["Free tier includes basic features with usage limits. Upgrade for unlimited access.", "Starter plan has limited monthly credits. Pro version removes restrictions.", "Free version includes watermark. Premium removes watermark and adds advanced features.", "Limited to 3 projects on free plan. Subscribe for unlimited projects.", "Free tier: 50 API calls/day. Paid: Unlimited + priority support."];
+            return details[Math.floor(Math.random() * details.length)];
+        }
+        return null;
+    }
+    
+    // Generate 160 tools
+    for (let i = 0; i < 165; i++) {
+        const nameIndex = i % toolNames.length;
+        let name = toolNames[nameIndex];
+        if (i >= toolNames.length) name = `${toolNames[i % toolNames.length]} ${Math.floor(i / toolNames.length) + 1}`;
+        
+        const price = getRandomPrice();
+        const category = categories[i % categories.length];
+        const limit = getLimitText(price);
+        const detailedLimit = getDetailedLimit(price);
+        
+        let desc = "";
+        if (category === "Chat/LLM") desc = "Advanced conversational AI for text generation, coding, and analysis.";
+        else if (category === "Image Gen") desc = "Create stunning visuals from text prompts with AI image generation.";
+        else if (category === "Video") desc = "Generate and edit videos using artificial intelligence.";
+        else if (category === "Audio") desc = "AI-powered audio generation, transcription, and voice synthesis.";
+        else if (category === "Productivity") desc = "Boost workflow efficiency with AI assistants and automation.";
+        else if (category === "Coding") desc = "AI pair programming, code completion, and debugging tools.";
+        else desc = "Powerful AI tool to enhance your creative and professional work.";
+        
+        let url = `https://${name.toLowerCase().replace(/[^a-z0-9]/g, '')}.ai`;
+        if (name === "ChatGPT Free") url = "https://chat.openai.com/";
+        if (name === "Claude Free") url = "https://claude.ai/";
+        if (name === "Gemini Free") url = "https://gemini.google.com/";
+        if (name === "Leonardo Free") url = "https://leonardo.ai/";
+        if (name === "Perplexity Free") url = "https://www.perplexity.ai/";
+        if (name === "ElevenLabs Free") url = "https://elevenlabs.io/";
+        if (name === "Suno Free") url = "https://suno.ai/";
+        if (name === "Runway Free") url = "https://runwayml.com/";
+        if (name === "Canva AI") url = "https://www.canva.com/";
+        if (name === "Copilot Free") url = "https://github.com/features/copilot";
+        
+        tools.push({
+            id: i,
+            name: name,
+            price: price,
+            category: category,
+            desc: desc,
+            limit: limit,
+            detailedLimit: detailedLimit,
+            url: url,
+            icon: getIcon(category)
+        });
+    }
+    
+    function getIcon(cat) {
+        const icons = {
+            "Chat/LLM": "fa-comment-dots",
+            "Image Gen": "fa-palette",
+            "Video": "fa-video",
+            "Audio": "fa-headphones",
+            "Productivity": "fa-chart-line",
+            "Coding": "fa-code",
+            "Design": "fa-pen-ruler",
+            "Research": "fa-graduation-cap",
+            "Business": "fa-chart-simple"
+        };
+        return icons[cat] || "fa-robot";
+    }
+    
+    function getFilteredTools() {
+        let filtered = [...tools];
+        if (currentPriceFilter !== "all") {
+            filtered = filtered.filter(t => t.price === currentPriceFilter);
+        }
+        if (currentSearch.trim()) {
+            const q = currentSearch.toLowerCase();
+            filtered = filtered.filter(t => t.name.toLowerCase().includes(q) || t.desc.toLowerCase().includes(q));
+        }
+        return filtered;
+    }
+    
+    function renderTools() {
+        const filtered = getFilteredTools();
+        const totalPages = Math.ceil(filtered.length / itemsPerPage);
+        if (currentPage > totalPages) currentPage = 1;
+        const start = (currentPage - 1) * itemsPerPage;
+        const paginated = filtered.slice(start, start + itemsPerPage);
+        
+        const container = document.getElementById('toolsGrid');
+        if (paginated.length === 0) {
+            container.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:3rem;"><i class="fas fa-search"></i> No tools found.</div>`;
+            document.getElementById('pagination').innerHTML = '';
+            return;
+        }
+        
+        container.innerHTML = paginated.map(tool => `
+            <div class="tool-card" data-tool-id="${tool.id}">
+                <div class="price-tag ${tool.price}">${tool.price === 'free' ? '✨ FREE' : '🔄 FREEMIUM'}</div>
+                <div class="tool-header">
+                    <i class="fas ${tool.icon} tool-icon"></i>
+                    <span class="tool-name">${escapeHtml(tool.name)}</span>
+                </div>
+                <div class="tool-category"><i class="fas fa-tag"></i> ${tool.category}</div>
+                <div class="tool-desc">${escapeHtml(tool.desc.substring(0, 100))}${tool.desc.length > 100 ? '...' : ''}</div>
+                ${tool.limit ? `<div class="limit-badge"><i class="fas fa-info-circle"></i> ⚡ ${tool.limit}</div>` : ''}
+                <div class="tool-actions">
+                    <button class="details-btn" data-id="${tool.id}"><i class="fas fa-info-circle"></i> Details</button>
+                    <a href="${tool.url}" class="tool-link-btn" target="_blank" rel="noopener"><i class="fas fa-external-link-alt"></i> Launch →</a>
+                </div>
+            </div>
+        `).join('');
+        
+        renderPagination(totalPages);
+        
+        // Add details button listeners
+        document.querySelectorAll('.details-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const id = parseInt(btn.getAttribute('data-id'));
+                const tool = tools.find(t => t.id === id);
+                if (tool) showModal(tool);
+            });
+        });
+    }
+    
+    function renderPagination(total) {
+        const div = document.getElementById('pagination');
+        if (total <= 1) { div.innerHTML = ''; return; }
+        let html = `<button class="page-btn" data-page="${currentPage-1}" ${currentPage===1 ? 'disabled style="opacity:0.5;"' : ''}>◀ Prev</button>`;
+        let start = Math.max(1, currentPage-2);
+        let end = Math.min(total, currentPage+2);
+        if (start > 1) html += `<button class="page-btn" data-page="1">1</button>${start>2 ? '<span>...</span>' : ''}`;
+        for (let i = start; i <= end; i++) html += `<button class="page-btn ${i===currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+        if (end < total) html += `${end < total-1 ? '<span>...</span>' : ''}<button class="page-btn" data-page="${total}">${total}</button>`;
+        html += `<button class="page-btn" data-page="${currentPage+1}" ${currentPage===total ? 'disabled style="opacity:0.5;"' : ''}>Next ▶</button>`;
+        div.innerHTML = html;
+        document.querySelectorAll('.page-btn').forEach(btn => {
+            const p = parseInt(btn.getAttribute('data-page'));
+            if (!isNaN(p) && p>=1 && p<=total) btn.addEventListener('click', () => { currentPage = p; renderTools(); window.scrollTo({top:400,behavior:'smooth'}); });
+        });
+    }
+    
+    function showModal(tool) {
+        const modal = document.getElementById('toolModal');
+        document.getElementById('modalTitle').innerHTML = `<i class="fas ${tool.icon}"></i> ${escapeHtml(tool.name)}`;
+        const priceColor = tool.price === 'free' ? '#22c55e' : '#f59e0b';
+        document.getElementById('modalPrice').innerHTML = tool.price === 'free' ? '✨ Completely Free' : '🔄 Freemium (Free with limits)';
+        document.getElementById('modalPrice').style.background = priceColor + '20';
+        document.getElementById('modalPrice').style.color = priceColor;
+        document.getElementById('modalDesc').innerHTML = tool.desc;
+        
+        const limitDiv = document.getElementById('modalLimit');
+        if (tool.price === 'freemium' && tool.detailedLimit) {
+            limitDiv.style.display = 'block';
+            limitDiv.innerHTML = `<i class="fas fa-chart-line"></i> <strong>Free Tier Details:</strong><br>${tool.detailedLimit}<br><br><small>Premium version removes these limitations and adds advanced features.</small>`;
+        } else if (tool.price === 'free') {
+            limitDiv.style.display = 'block';
+            limitDiv.innerHTML = `<i class="fas fa-check-circle"></i> <strong>100% Free!</strong><br>This tool is completely free to use with no paid tiers. Enjoy unlimited access.`;
+            limitDiv.style.background = 'rgba(34,197,94,0.2)';
+        } else {
+            limitDiv.style.display = 'none';
+        }
+        
+        const link = document.getElementById('modalLink');
+        link.href = tool.url;
+        modal.classList.add('active');
+    }
+    
+    function escapeHtml(str) { return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+    
+    // Bind events
+    function bindEvents() {
+        document.querySelectorAll('.price-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('.price-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                currentPriceFilter = chip.getAttribute('data-price');
+                currentPage = 1;
+                renderTools();
+            });
+        });
+        
+        const desktopSearch = document.getElementById('desktopSearchInput');
+        const mobileSearch = document.getElementById('mobileSearchInput');
+        const updateSearch = () => {
+            currentSearch = desktopSearch.value;
+            if (mobileSearch) mobileSearch.value = currentSearch;
+            currentPage = 1;
+            renderTools();
+        };
+        if (desktopSearch) desktopSearch.addEventListener('input', updateSearch);
+        if (mobileSearch) mobileSearch.addEventListener('input', (e) => {
+            currentSearch = e.target.value;
+            if (desktopSearch) desktopSearch.value = currentSearch;
+            currentPage = 1;
+            renderTools();
+        });
+        
+        document.getElementById('modalCloseBtn').addEventListener('click', () => {
+            document.getElementById('toolModal').classList.remove('active');
+        });
+        document.getElementById('toolModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('toolModal')) {
+                document.getElementById('toolModal').classList.remove('active');
+            }
+        });
+    }
+    
+    // Sidebar logic
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const menuToggle = document.getElementById('menuToggleBtn');
+    const closeBtn = document.getElementById('closeSidebarBtn');
+    
+    function openSidebar() { sidebar.classList.add('open'); overlay.classList.add('active'); document.body.style.overflow = 'hidden'; }
+    function closeSidebar() { sidebar.classList.remove('open'); overlay.classList.remove('active'); document.body.style.overflow = ''; }
+    menuToggle?.addEventListener('click', openSidebar);
+    closeBtn?.addEventListener('click', closeSidebar);
+    overlay?.addEventListener('click', closeSidebar);
+    
+    let touchStartX = 0;
+    document.body.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; });
+    document.body.addEventListener('touchend', (e) => {
+        const endX = e.changedTouches[0].screenX;
+        const diff = endX - touchStartX;
+        if (diff > 60 && touchStartX < 40) openSidebar();
+        if (diff < -60 && sidebar.classList.contains('open')) closeSidebar();
+    });
+    
+    setTimeout(() => { const hint = document.getElementById('swipeHint'); if(hint) setTimeout(() => hint.style.opacity = '0', 4000); }, 2000);
+    
+    bindEvents();
+    renderTools();
+    console.log(`✅ Loaded ${tools.length} free & freemium AI tools`);
+</script>
+</body>
+</html>

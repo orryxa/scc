@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>ORRYXA AI | Futuristic AI Tools Directory – Home</title>
+    <!-- Google Fonts & modern styling -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: radial-gradient(circle at 10% 20%, #0a0f2a, #03050b);
+            font-family: 'Inter', 'Space Grotesk', sans-serif;
+            color: #f0f3ff;
+            overflow-x: hidden;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+
+        /* ========== SIDEBAR (mobile menu) ========== */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            z-index: 998;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -280px;
+            width: 280px;
+            height: 100%;
+            background: rgba(8, 15, 30, 0.98);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(168, 85, 247, 0.4);
+            box-shadow: 10px 0 40px rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            transition: left 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 1rem;
+            gap: 1.5rem;
+        }
+        .sidebar.open {
+            left: 0;
+        }
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(168, 85, 247, 0.3);
+        }
+        .sidebar-logo {
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f0f9ff, #c084fc, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .close-sidebar {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #c084fc;
+            font-size: 1.4rem;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+        .close-sidebar:hover {
+            background: rgba(168,85,247,0.3);
+            transform: rotate(90deg);
+        }
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .sidebar-nav a {
+            color: #eef5ff;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            padding: 0.7rem 1rem;
+            border-radius: 1rem;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+        .sidebar-nav a i {
+            width: 24px;
+            color: #a855f7;
+        }
+        .sidebar-nav a:hover, .sidebar-nav a.active {
+            background: linear-gradient(95deg, rgba(168,85,247,0.2), rgba(59,130,246,0.2));
+            color: #c084fc;
+            transform: translateX(5px);
+        }
+        .sidebar-footer {
+            margin-top: auto;
+            padding-top: 1rem;
+            font-size: 0.7rem;
+            text-align: center;
+            opacity: 0.6;
+        }
+
+        /* Desktop Nav */
+        .desktop-nav {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        .menu-toggle {
+            background: rgba(168,85,247,0.2);
+            border: 1px solid #a855f7;
+            border-radius: 12px;
+            padding: 0.5rem 0.8rem;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: none;
+        }
+        .nav-links {
+            display: flex;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+        nav a {
+            text-decoration: none;
+            color: #eef5ff;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        nav a:hover {
+            color: #c084fc;
+            text-shadow: 0 0 6px #9b4dff;
+        }
+
+        /* Mobile full-width search */
+        .mobile-search-wrapper {
+            display: none;
+            width: 100%;
+            margin: 0.5rem 0 1rem;
+            padding: 0 0.5rem;
+        }
+        .mobile-search-full {
+            background: rgba(20, 30, 55, 0.8);
+            backdrop-filter: blur(12px);
+            border-radius: 3rem;
+            padding: 0.7rem 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            border: 1px solid rgba(80,150,255,0.5);
+            width: 100%;
+        }
+        .mobile-search-full i {
+            color: #9ca3ff;
+            font-size: 1rem;
+        }
+        .mobile-search-full input {
+            background: transparent;
+            border: none;
+            color: white;
+            outline: none;
+            width: 100%;
+            font-size: 1rem;
+            padding: 0.2rem 0;
+        }
+        .mobile-search-full input::placeholder {
+            color: #a0b3d9;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+            .desktop-nav .nav-links {
+                display: none;
+            }
+            .menu-toggle {
+                display: block;
+            }
+            .mobile-search-wrapper {
+                display: block;
+            }
+            .hero-wrapper {
+                flex-direction: column;
+            }
+            .hero h1 {
+                font-size: 2.2rem !important;
+            }
+            .tool-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+
+        /* Hero & existing styles */
+        .btn-gradient {
+            background: linear-gradient(95deg, #a855f7, #3b82f6);
+            border: none;
+            color: white;
+            font-weight: 700;
+            padding: 0.9rem 2rem;
+            border-radius: 2.5rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 8px 20px rgba(59,130,246,0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .btn-gradient:hover {
+            transform: scale(1.02);
+            box-shadow: 0 12px 28px rgba(139,92,246,0.6);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid rgba(168, 85, 247, 0.7);
+            color: #e2e8ff;
+            padding: 0.85rem 1.8rem;
+            border-radius: 2.5rem;
+            font-weight: 600;
+            transition: all 0.25s ease;
+            backdrop-filter: blur(4px);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .btn-outline:hover {
+            border-color: #a855f7;
+            background: rgba(168,85,247,0.15);
+            box-shadow: 0 0 15px rgba(168,85,247,0.4);
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-12px); }
+            100% { transform: translateY(0px); }
+        }
+        .floating { animation: float 5s ease-in-out infinite; }
+        .floating-slow { animation: float 7s ease-in-out infinite 0.5s; }
+
+        .hero-graphic {
+            position: relative;
+            width: 100%;
+            max-width: 420px;
+            aspect-ratio: 1 / 1;
+            margin: 0 auto;
+        }
+        .robot-hand {
+            position: absolute;
+            bottom: 10%;
+            right: 5%;
+            width: 70%;
+            filter: drop-shadow(0 0 15px rgba(0, 200, 255, 0.4));
+            z-index: 2;
+        }
+        .glowing-ai-icon {
+            position: absolute;
+            top: 25%;
+            left: 15%;
+            width: 45%;
+            background: radial-gradient(circle, rgba(59,130,246,0.5), rgba(168,85,247,0.2));
+            backdrop-filter: blur(10px);
+            border-radius: 32px;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid rgba(0,255,255,0.7);
+            box-shadow: 0 0 30px #00ccff40;
+            z-index: 3;
+        }
+        .float-card {
+            position: absolute;
+            background: rgba(25, 35, 55, 0.75);
+            backdrop-filter: blur(12px);
+            border-radius: 20px;
+            padding: 8px 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: 1px solid rgba(139,92,246,0.5);
+            white-space: nowrap;
+        }
+        .trending-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        .pill {
+            background: rgba(20, 30, 55, 0.7);
+            backdrop-filter: blur(16px);
+            border-radius: 100px;
+            padding: 0.5rem 1.3rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1px solid rgba(0, 255, 255, 0.25);
+        }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.8rem;
+            margin: 3rem 0 2rem;
+        }
+        .feature-card {
+            background: rgba(20, 28, 48, 0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            border: 1px solid rgba(100, 150, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        .feature-card i {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #a855f7, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1rem;
+        }
+        .feature-card h4 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        .feature-card:hover {
+            transform: translateY(-6px);
+            border-color: #6c5ce7;
+            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.5);
+        }
+
+        /* TOOLS SPOTLIGHT SECTION */
+        .tools-showcase {
+            margin: 3rem 0 2rem;
+        }
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            background: linear-gradient(125deg, #e2e8ff, #a855f7);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+        }
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 2rem;
+        }
+        .tool-card {
+            background: rgba(12, 20, 35, 0.65);
+            backdrop-filter: blur(14px);
+            border-radius: 2rem;
+            padding: 1.6rem;
+            border: 1px solid rgba(100, 150, 255, 0.25);
+            transition: all 0.3s ease;
+        }
+        .tool-card:hover {
+            transform: translateY(-8px);
+            border-color: #8b5cf6;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.6);
+        }
+        .tool-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.2rem;
+        }
+        .tool-icon {
+            font-size: 2.5rem;
+            background: linear-gradient(145deg, #38bdf8, #c084fc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .tool-name {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+        }
+        .tool-description {
+            font-size: 0.9rem;
+            opacity: 0.85;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+        .badge-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin: 1rem 0;
+        }
+        .badge {
+            background: rgba(59,130,246,0.2);
+            border-radius: 40px;
+            padding: 0.2rem 0.8rem;
+            font-size: 0.7rem;
+            font-weight: 500;
+            border-left: 2px solid #3b82f6;
+        }
+        .pros-cons {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .pros, .cons {
+            flex: 1;
+            background: rgba(0,0,0,0.3);
+            border-radius: 1rem;
+            padding: 0.6rem;
+        }
+        .pros h5, .cons h5 {
+            font-size: 0.8rem;
+            margin-bottom: 0.4rem;
+        }
+        .pros h5 i { color: #22c55e; margin-right: 4px; }
+        .cons h5 i { color: #f97316; margin-right: 4px; }
+        .pros p, .cons p {
+            font-size: 0.75rem;
+            opacity: 0.85;
+        }
+        .tool-link {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 1rem;
+        }
+        .open-tool {
+            background: rgba(168,85,247,0.2);
+            border-radius: 2rem;
+            padding: 0.5rem 1.2rem;
+            font-size: 0.8rem;
+            text-decoration: none;
+            color: #c084fc;
+            font-weight: 600;
+            border: 1px solid #a855f7;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .open-tool:hover {
+            background: #a855f7;
+            color: white;
+            box-shadow: 0 0 12px #a855f7;
+        }
+
+        .swipe-hint {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(8px);
+            padding: 6px 12px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            z-index: 900;
+            pointer-events: none;
+            opacity: 0.7;
+            transition: opacity 1s;
+        }
+        @media (min-width: 769px) {
+            .swipe-hint {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar Overlay -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- Sidebar Menu -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <span class="sidebar-logo">⚡ ORRYXA AI</span>
+        <button class="close-sidebar" id="closeSidebarBtn"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="sidebar-nav">
+        <a href="index.html" class="active"><i class="fas fa-home"></i> Home</a>
+        <a href="trending.html"><i class="fas fa-chart-line"></i>Live Trending</a>
+        <a href="AiTools.html"><i class="fas fa-cubes"></i> All Tools</a>
+        <a href="categories.html"><i class="fas fa-tags"></i> Categories</a>
+		<a href="freeTools.html"><i class="fas fa-cubes"></i> Ai Free Tools</a>
+        <a href="news.html"><i class="fas fa-book-open"></i>Latest Ai News</a>
+        <a href="about.html"><i class="fas fa-info-circle"></i> About</a>
+    </div>
+    <div class="sidebar-footer">
+        <i class="fas fa-microchip"></i> Discover the future of AI<br>
+        © 2025 ORRYXA
+    </div>
+</div>
+
+<div class="container">
+    <!-- Navigation Bar -->
+    <nav style="display: flex; justify-content: space-between; align-items: center; padding: 1.2rem 0; flex-wrap: wrap; gap: 1rem;">
+        <div class="logo" style="font-family: 'Space Grotesk', monospace; font-size: 1.8rem; font-weight: 800; background: linear-gradient(135deg, #f0f9ff, #c084fc, #3b82f6); -webkit-background-clip: text; background-clip: text; color: transparent;">
+            ⚡ ORRYXA AI
+        </div>
+        
+        <div class="desktop-nav">
+            <div class="nav-links">
+                <a href="index.html" style="border-bottom: 2px solid #a855f7;">Home</a>
+                <a href="trending.html">Live Trending</a>
+                <a href="AiTools.html">All Tools</a>
+                <a href="categories.html">Categories</a>
+				<a href="freeTools.html">Ai Free Tools</a>
+                <a href="news.html">Latest Ai News</a>
+                <a href="about.html">About</a>
+            </div>
+        </div>
+        
+        <button class="menu-toggle" id="menuToggleBtn"><i class="fas fa-bars"></i></button>
+    </nav>
+
+    <!-- FULL WIDTH MOBILE SEARCH -->
+    <div class="mobile-search-wrapper" id="mobileSearchWrapper">
+        <div class="mobile-search-full">
+            <i class="fas fa-search"></i>
+            <input type="text" id="mobileSearchInput" placeholder="Search 100+ AI tools...">
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero-wrapper" style="display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; margin: 1rem 0 1rem;">
+        <div class="hero" style="flex: 1.2; min-width: 260px;">
+            <h1 style="font-size: 3.5rem; font-weight: 800; line-height: 1.2; letter-spacing: -1px;">Find The Best <span style="background: linear-gradient(125deg, #c084fc, #3b82f6, #06b6d4); -webkit-background-clip: text; background-clip: text; color: transparent;">AI Tools.</span></h1>
+            <p style="font-size: 1.1rem; margin: 1.2rem 0 1.8rem; opacity: 0.85; max-width: 550px;">Discover, compare & boost productivity with ORRYXA's intelligent directory. In-depth reviews, advantages, and direct access to cutting-edge AI.</p>
+            <div style="display: flex; gap: 1.2rem; flex-wrap: wrap;">
+                <button class="btn-gradient" onclick="window.location.href='AiTools.html'"><i class="fas fa-arrow-right"></i> Explore AI Tools</button>
+                <button class="btn-outline" onclick="window.location.href='categories.html'"><i class="fas fa-th-large"></i> Browse Categories</button>
+            </div>
+            <div class="trending-row">
+                <div class="pill"><i class="fas fa-fire-flame"></i> Trending Now</div>
+                <div class="pill"><i class="fas fa-robot"></i> ChatGPT</div>
+                <div class="pill"><i class="fas fa-palette"></i> Midjourney</div>
+                <div class="pill"><i class="fas fa-brain"></i> Claude</div>
+                <div class="pill"><i class="fas fa-chart-line"></i> Perplexity</div>
+            </div>
+        </div>
+
+        <!-- 3D graphic right -->
+        <div class="hero-graphic floating-slow">
+            <div style="position: relative; height: 100%;">
+                <svg class="robot-hand" viewBox="0 0 200 200" fill="none">
+                    <path d="M120,140 L150,120 L160,100 L140,85 L115,95 L100,110 L85,105 L70,115 L80,135 L100,140 L120,140Z" fill="url(#handGrad)" stroke="#00e0ff" stroke-width="1.5"/>
+                    <path d="M130,130 L155,115 L162,100 L147,85 L128,92 L115,102 L102,102 L90,108 L93,122 L108,130 L130,130Z" fill="url(#innerGrad)" stroke="#8b5cf6"/>
+                    <circle cx="135" cy="108" r="6" fill="#22d3ee" stroke="#ffffff" stroke-width="1" />
+                    <defs>
+                        <linearGradient id="handGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4f46e5" stop-opacity="0.9"/><stop offset="100%" stop-color="#a855f7"/></linearGradient>
+                        <linearGradient id="innerGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#38bdf8" stop-opacity="0.7"/><stop offset="100%" stop-color="#c084fc"/></linearGradient>
+                    </defs>
+                </svg>
+                <div class="glowing-ai-icon floating"><i class="fas fa-microchip" style="font-size: 1.8rem; color: cyan;"></i><div style="font-weight: bold;">AI Directory</div></div>
+                <div class="floating-icons">
+                    <div class="float-card" style="top: 10%; left: -5%; animation: float 4s infinite;"><i class="fas fa-comment-dots" style="color:#38bdf8"></i> <span>ChatGPT</span></div>
+                    <div class="float-card" style="top: 60%; left: -15%; animation: float 5s infinite 1s;"><i class="fas fa-brush" style="color:#c084fc"></i> <span>Midjourney</span></div>
+                    <div class="float-card" style="top: 75%; right: -8%; left: auto; animation: float 4.5s infinite 0.5s;"><i class="fas fa-feather-alt" style="color:#60a5fa"></i> <span>Claude</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feature Highlights 4 cards -->
+    <div class="features-grid">
+        <div class="feature-card"><i class="fas fa-cubes"></i><h4>100+ AI Tools</h4><p>Curated & updated weekly</p></div>
+        <div class="feature-card"><i class="fas fa-star-of-life"></i><h4>In-Depth Reviews</h4><p>Pros, cons & ratings</p></div>
+        <div class="feature-card"><i class="fas fa-hourglass-half"></i><h4>Save Time</h4><p>Compare & decide faster</p></div>
+        <div class="feature-card"><i class="fas fa-shield-alt"></i><h4>Trusted & Updated</h4><p>Rigorous audits</p></div>
+    </div>
+
+    <!-- NEW: AI Tools Spotlight Section with detailed Functions, advantages/disadvantages, links -->
+    <div class="tools-showcase">
+        <div class="section-title"><i class="fas fa-microchip"></i> ✦ Featured AI Tools — Insights & Access</div>
+        <div class="tool-grid">
+            <!-- Tool 1: ChatGPT -->
+            <div class="tool-card">
+                <div class="tool-header"><i class="fas fa-comment-dots tool-icon"></i><span class="tool-name">ChatGPT Pro</span></div>
+                <div class="tool-description">Advanced conversational AI by OpenAI. Ideal for content, coding, brainstorming, and real-time assistance.</div>
+                <div class="badge-group"><span class="badge"><i class="fas fa-tag"></i> LLM</span><span class="badge"><i class="fas fa-globe"></i> Multimodal</span><span class="badge"><i class="fas fa-plug"></i> Plugins</span></div>
+                <div class="pros-cons"><div class="pros"><h5><i class="fas fa-check-circle"></i> Advantages</h5><p>+ Human-like reasoning<br>+ 1M token context<br>+ Real-time web search</p></div>
+                <div class="cons"><h5><i class="fas fa-exclamation-triangle"></i> Disadvantages</h5><p>- Subscription cost<br>- Occasional hallucinations</p></div></div>
+                <div class="tool-link"><a href="https://chat.openai.com/" class="open-tool" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> Launch Tool →</a></div>
+            </div>
+            <!-- Tool 2: Midjourney AI -->
+            <div class="tool-card">
+                <div class="tool-header"><i class="fas fa-palette tool-icon"></i><span class="tool-name">Midjourney 6</span></div>
+                <div class="tool-description">Revolutionary AI image generator with stunning realism, artistic control, and style lock features. Used by designers globally.</div>
+                <div class="badge-group"><span class="badge"><i class="fas fa-image"></i> Image Gen</span><span class="badge"><i class="fas fa-brush"></i> Creative Suite</span></div>
+                <div class="pros-cons"><div class="pros"><h5><i class="fas fa-check-circle"></i> Advantages</h5><p>+ Photorealistic output<br>+ Fast iteration<br>+ Discord integration</p></div>
+                <div class="cons"><h5><i class="fas fa-exclamation-triangle"></i> Disadvantages</h5><p>- No free tier<br>- Requires Discord</p></div></div>
+                <div class="tool-link"><a href="https://www.midjourney.com/" class="open-tool" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> Try Midjourney →</a></div>
+            </div>
+            <!-- Tool 3: Claude 3.5 Sonnet -->
+            <div class="tool-card">
+                <div class="tool-header"><i class="fas fa-brain tool-icon"></i><span class="tool-name">Claude 3.5</span></div>
+                <div class="tool-description">Anthropic's most capable assistant, excels at code, long documents, nuanced reasoning and safety-first AI.</div>
+                <div class="badge-group"><span class="badge"><i class="fas fa-file-alt"></i> 200K context</span><span class="badge"><i class="fas fa-shield"></i> Constitutional AI</span></div>
+                <div class="pros-cons"><div class="pros"><h5><i class="fas fa-check-circle"></i> Advantages</h5><p>+ Incredible long-form accuracy<br>+ Low hallucination rate<br>+ API affordable</p></div>
+                <div class="cons"><h5><i class="fas fa-exclamation-triangle"></i> Disadvantages</h5><p>- Limited web search<br>- Less creative visual output</p></div></div>
+                <div class="tool-link"><a href="https://claude.ai/" class="open-tool" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> Access Claude →</a></div>
+            </div>
+            <!-- Tool 4: Runway Gen-2 -->
+            <div class="tool-card">
+                <div class="tool-header"><i class="fas fa-video tool-icon"></i><span class="tool-name">Runway Gen-2</span></div>
+                <div class="tool-description">Text-to-video & image-to-video AI. Create cinematic clips, motion editing and real-time generation.</div>
+                <div class="badge-group"><span class="badge"><i class="fas fa-film"></i> Video Gen</span><span class="badge"><i class="fas fa-magic"></i> Motion Brush</span></div>
+                <div class="pros-cons"><div class="pros"><h5><i class="fas fa-check-circle"></i> Advantages</h5><p>+ High quality 4s clips<br>+ Green screen & inpainting<br>+ Cloud workflow</p></div>
+                <div class="cons"><h5><i class="fas fa-exclamation-triangle"></i> Disadvantages</h5><p>- Watermark on free<br>- Generation limits</p></div></div>
+                <div class="tool-link"><a href="https://runwayml.com/" class="open-tool" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> Create Video →</a></div>
+            </div>
+        </div>
+        <div class="tool-grid" style="margin-top: 1.8rem;">
+            <!-- Tool 5: Perplexity AI -->
+            <div class="tool-card">
+                <div class="tool-header"><i class="fas fa-chart-line tool-icon"></i><span class="tool-name">Perplexity AI</span></div>
+                <div class="tool-description">Research-focused answer engine with citations, real-time data, and pro search features. Perfect for fact-checking and deep dives.</div>
+                <div class="badge-group"><span class="badge"><i class="fas fa-citation"></i> Citations</span><span class="badge"><i class="fas fa-database"></i> Real-time</span></div>
+                <div class="pros-cons"><div class="pros"><h5><i class="fas fa-check-circle"></i> Advantages</h5><p>+ Source transparency<br>+ Multimodal search<br>+ Free tier robust</p></div><div class="cons"><h5><i class="fas fa-exclamation-triangle"></i> Disadvantages</h5><p>- Limited creative tasks<br>- Pro plan needed for GPT-4</p></div></div>
+                <div class="tool-link"><a href="https://www.perplexity.ai/" class="open-tool" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> Explore Perplexity →</a></div>
+            </div>
+            <!-- Tool 6: Leonardo.ai -->
+            <div class="tool-card">
+                <div class="tool-header"><i class="fas fa-draw-polygon tool-icon"></i><span class="tool-name">Leonardo.ai</span></div>
+                <div class="tool-description">Advanced image synthesis & real-time canvas. Offers pre-trained models, style tuning and commercial usage.</div>
+                <div class="badge-group"><span class="badge"><i class="fas fa-palette"></i> Art Gen</span><span class="badge"><i class="fas fa-layer-group"></i> Fine-tuning</span></div>
+                <div class="pros-cons"><div class="pros"><h5><i class="fas fa-check-circle"></i> Advantages</h5><p>+ Generous free credits<br>+ Model training<br>+ Inpainting</p></div><div class="cons"><h5><i class="fas fa-exclamation-triangle"></i> Disadvantages</h5><p>- Queue times during peak<br>- Some style overfitting</p></div></div>
+                <div class="tool-link"><a href="https://leonardo.ai/" class="open-tool" target="_blank" rel="noopener noreferrer"><i class="fas fa-external-link-alt"></i> Generate Art →</a></div>
+            </div>
+        </div>
+        <p style="text-align: center; margin-top: 2rem; font-size: 0.85rem; opacity: 0.7;"><i class="fas fa-info-circle"></i> Each tool includes advantages, disadvantages, and direct access link. Compare before you commit.</p>
+    </div>
+
+    <!-- Footer note -->
+    <div style="margin: 2rem 0 2rem; text-align: center; opacity: 0.6; font-size: 0.8rem; border-top: 1px solid rgba(100,150,255,0.2); padding-top: 2rem;">
+        <i class="fas fa-bolt" style="color:#60a5fa"></i> ORRYXA AI — The ultimate AI ecosystem • 100+ verified tools
+    </div>
+</div>
+
+<div class="swipe-hint" id="swipeHint"><i class="fas fa-arrows-alt-h"></i> Swipe right → open menu</div>
+
+<script>
+    // ========== SIDEBAR with Gesture ==========
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const menuToggle = document.getElementById('menuToggleBtn');
+    const closeBtn = document.getElementById('closeSidebarBtn');
+    
+    function openSidebar() {
+        sidebar.classList.add('open');
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeSidebar() {
+        sidebar.classList.remove('open');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    
+    if(menuToggle) menuToggle.addEventListener('click', openSidebar);
+    if(closeBtn) closeBtn.addEventListener('click', closeSidebar);
+    if(overlay) overlay.addEventListener('click', closeSidebar);
+    
+    // Swipe gesture detection
+    let touchStartX = 0;
+    document.body.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    });
+    document.body.addEventListener('touchend', (e) => {
+        const endX = e.changedTouches[0].screenX;
+        const diff = endX - touchStartX;
+        if(diff > 60 && touchStartX < 40) {
+            openSidebar();
+        }
+        if(diff < -60 && sidebar.classList.contains('open')) {
+            closeSidebar();
+        }
+    });
+    
+    // Hide swipe hint after a few seconds
+    setTimeout(() => {
+        const hint = document.getElementById('swipeHint');
+        if(hint) {
+            setTimeout(() => { hint.style.opacity = '0'; }, 4000);
+        }
+    }, 2000);
+    
+    // ========== SEARCH FUNCTIONALITY (redirects to tools.html with search query) ==========
+    const mobileSearchInput = document.getElementById('mobileSearchInput');
+    
+    function performSearch() {
+        const query = mobileSearchInput ? mobileSearchInput.value.trim() : '';
+        if(query !== '') {
+            sessionStorage.setItem('searchQuery', query);
+            window.location.href = 'tools.html';
+        } else {
+            window.location.href = 'tools.html';
+        }
+    }
+    
+    if(mobileSearchInput) {
+        mobileSearchInput.addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') {
+                performSearch();
+            }
+        });
+    }
+    
+    console.log('ORRYXA AI Home - Full featured with sidebar, mobile search & tool spotlight');
+</script>
+
+<style>
+    @media (max-width: 480px) {
+        .hero h1 {
+            font-size: 2rem !important;
+        }
+        .btn-gradient, .btn-outline {
+            padding: 0.7rem 1.4rem;
+            font-size: 0.85rem;
+        }
+        .feature-card h4 {
+            font-size: 1.1rem;
+        }
+        .pill {
+            font-size: 0.7rem;
+            padding: 0.35rem 1rem;
+        }
+        .section-title {
+            font-size: 1.5rem !important;
+        }
+        .tool-name {
+            font-size: 1.2rem !important;
+        }
+    }
+    ::-webkit-scrollbar {
+        width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+        background: #0b1120;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #3b82f6;
+        border-radius: 10px;
+    }
+</style>
+</body>
+</html>
